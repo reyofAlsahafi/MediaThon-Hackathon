@@ -1,0 +1,11 @@
+data/
+node_modules/
+test-data/
+.env
+.env.*
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.key
+staff-credentials.txt
+.DS_Store

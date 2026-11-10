@@ -1,0 +1,13 @@
+{
+  "name": "raffah-hackathon",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "check": "node --check server.mjs && node --check identity.mjs && node --check alerts.mjs && node --check public/qr-scanner.js && node --check audio.mjs && node --check ai.mjs && node --check public/app.js && node --check public/record-worklet.js && node --check test.cjs && node --check test-ai-provider.mjs && node --check test-rebuild.cjs",
+    "test:workflow": "node test-rebuild.cjs",
+    "test": "node test.cjs"
+  }
+}
