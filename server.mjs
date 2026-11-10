@@ -110,6 +110,39 @@ if(newRoles.length){
     }
   });
 }
+
+// إعداد حسابات العرض التجريبي من متغيرات Render
+if (process.env.RAFFAH_DEMO_ACCOUNTS) {
+  const demoAccounts = JSON.parse(process.env.RAFFAH_DEMO_ACCOUNTS);
+
+  for (const account of demoAccounts) {
+    const { role, email, password } = account;
+
+    if (
+      !['nurse', 'doctor', 'reception'].includes(role) ||
+      typeof email !== 'string' ||
+      typeof password !== 'string' ||
+      password.length < 7
+    ) {
+      throw new Error('Invalid demo account configuration');
+    }
+
+    const username = email.trim().toLowerCase();
+    const salt = randomBytes(16).toString('hex');
+    const digest = scryptSync(password, salt, 64).toString('hex');
+
+    run(
+      `INSERT INTO staff_accounts(username, role, salt, digest)
+       VALUES(?, ?, ?, ?)
+       ON CONFLICT(username) DO UPDATE SET
+         role=excluded.role,
+         salt=excluded.salt,
+         digest=excluded.digest`,
+      username, role, salt, digest
+    );
+  }
+}
+
 migrateIdentity(db);
 initializeAlerts(db);
 function fail(message,status=400) { throw Object.assign(new Error(message), {status}); }
